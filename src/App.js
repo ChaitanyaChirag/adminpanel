@@ -1,23 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo, useState, useEffect } from "react";
+import axios from 'axios'
+import Table from "./Dashboard/Table";
+import Nav from "./Dashboard/Nav";
 
 function App() {
+    const [data, setData] = useState([]);
+
+    
+    useEffect(() => {
+      (async () => {
+        const result = await axios("https://reqres.in/api/users?page=1");
+        setData(result.data.data);
+      })();
+    }, []);
+    
+
+  const columns = useMemo(
+    () => [
+      {
+        
+        Header: "User",
+        
+        columns: [
+          {
+            Header: "ID",
+            accessor: "id"
+          },
+          {
+            Header: "Email",
+            accessor: "email"
+          }
+        ]
+      },
+      {
+      
+        Header: "Details",
+        
+        columns: [
+          {
+            Header: "First name",
+            accessor: "first_name"
+          },
+          {
+            Header: "Second name",
+            accessor: "last_name"
+          }
+        ]
+      }
+    ],
+    []
+  );
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Nav/>
+      <Table columns={columns} data={data} />
     </div>
   );
 }
